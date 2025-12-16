@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import { useEffect } from 'react';
+
+import Header from './Header';
+import ProductList from './ProductList';
+import ProductCard from './ProductCard';
+
+import inventoryData from './assets/inventory.json';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  // Invoke useState with initial inventory data
+  const [inventory, setInventory] = useState([]);
+
+  // Use useEffect to load in the inventory ONLY on first load-in
+  useEffect(() => {
+    setInventory([...inventoryData.inventory]);
+  }, []);
+
+  function promoteItem() {
+    return (
+      <ProductCard
+        name="Limited Edition Tee!"
+        description="Special limited edition neon green shirt with a metallic Code the Dream Logo shinier than the latest front-end framework! Signed by the legendary Frank!"
+      />
+    );
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <main>
+      <Header />
+      <ProductList inventory={inventory}>{promoteItem()}</ProductList>
+    </main>
+  );
 }
 
-export default App
+export default App;
