@@ -9,13 +9,35 @@ import inventoryData from './assets/inventory.json';
 import './App.css';
 
 function App() {
-  // Invoke useState with initial inventory data
+  // Invoke useState and useEffect to load in inventory data
   const [inventory, setInventory] = useState([]);
 
-  // Use useEffect to load in the inventory ONLY on first load-in
   useEffect(() => {
     setInventory([...inventoryData.inventory]);
   }, []);
+
+  // Invoke useState and define functions for cart functionality
+  const [cart, setCart] = useState([]);
+
+  function handleAddItemToCart(id) {
+    const target = inventory.find((item) => item.id === id);
+
+    // If item of id not found, raise error
+    if (!target) {
+      console.error('cart error: item not found');
+      return;
+    }
+
+    // Otherwise, append to cart the new item
+    const cartItem = { ...target, cartItemId: Date.now() };
+    console.log(cartItem);
+    setCart([...cart, cartItem]);
+  }
+
+  function removeItemFromCart(id) {
+    const updatedCart = cart.filter((item) => item.id !== id);
+    setCart([...updatedCart]);
+  }
 
   function promoteItem() {
     return (
@@ -28,8 +50,13 @@ function App() {
 
   return (
     <main>
-      <Header />
-      <ProductList inventory={inventory}>{promoteItem()}</ProductList>
+      <Header cart={cart} />
+      <ProductList
+        inventory={inventory}
+        handleAddItemToCart={handleAddItemToCart}
+      >
+        {promoteItem()}
+      </ProductList>
     </main>
   );
 }
